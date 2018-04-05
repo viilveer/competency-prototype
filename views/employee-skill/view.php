@@ -10,8 +10,13 @@ use yii\web\View;
 /* @var $employeeId int */
 /* @var $skills \app\models\Skill[] */
 /* @var $employeeSkills \app\models\EmployeeSkill[] */
+/* @var $employee \app\models\Employee */
 
-$this->title = 'Employee Skills';
+$this->title = 'Manage skills';
+
+$this->params['breadcrumbs'][] = ['label' => 'Companies', 'url' => ['company/index']];
+$this->params['breadcrumbs'][] = ['label' => $employee->company->name, 'url' => ['company/view', 'id' => $employee->company_id]];
+$this->params['breadcrumbs'][] = ['label' => $employee->name, 'url' => ['employee/view', 'id' => $employee->id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile(

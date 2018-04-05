@@ -10,7 +10,7 @@ use yii\widgets\DetailView;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Companies', 'url' => ['company/index']];
-$this->params['breadcrumbs'][] = ['label' => 'Opus', 'url' => ['company/view', 'id' => $model->company_id]];
+$this->params['breadcrumbs'][] = ['label' => $model->company->name, 'url' => ['company/view', 'id' => $model->company_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="employee-view">
@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add role', ['employee-role/create', 'employeeId' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Manage skills', ['employee-skill/view', 'employeeId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
