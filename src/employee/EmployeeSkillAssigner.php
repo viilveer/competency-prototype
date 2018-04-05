@@ -1,11 +1,11 @@
 <?php
 
-namespace competencyManagement\skill;
+namespace competencyManagement\employee;
 
 use app\models\EmployeeSkill;
+use competencyManagement\skill\SkillTreeModel;
 
 /**
- * SkillTreeBuilder class is used to generate tree from flat array of Skill models
  * @package competencyManagement\skill
  */
 class EmployeeSkillAssigner

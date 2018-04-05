@@ -1,6 +1,6 @@
 <?php
 
-namespace competencyManagement\skill;
+namespace competencyManagement\employee;
 
 use app\models\EmployeeSkill;
 use app\models\Skill;

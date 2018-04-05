@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 
 /**
  * This is the model class for table "role".
@@ -14,6 +13,7 @@ use Yii;
  *
  * @property EmployeeRole[] $employeeRoles
  * @property Company $company
+ * @property RoleSkill[] $roleSkills
  */
 class Role extends \yii\db\ActiveRecord
 {
@@ -35,7 +35,7 @@ class Role extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['company_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
+            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
         ];
     }
 
@@ -57,7 +57,7 @@ class Role extends \yii\db\ActiveRecord
      */
     public function getEmployeeRoles()
     {
-        return $this->hasMany(EmployeeRole::class, ['role_id' => 'id']);
+        return $this->hasMany(EmployeeRole::className(), ['role_id' => 'id']);
     }
 
     /**
@@ -65,7 +65,24 @@ class Role extends \yii\db\ActiveRecord
      */
     public function getCompany()
     {
-        return $this->hasOne(Company::class, ['id' => 'company_id']);
+        return $this->hasOne(Company::className(), ['id' => 'company_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoleSkills()
+    {
+        return $this->hasMany(RoleSkill::className(), ['role_id' => 'id']);
+    }
+
+    /**
+     * Needed for testing
+     * @param RoleSkill[] $roleSkills
+     */
+    public function setRoleSkills(array $roleSkills)
+    {
+        $this->roleSkills = $roleSkills;
     }
 
     /**

@@ -4,7 +4,7 @@ namespace tests\models;
 
 use app\models\EmployeeSkill;
 use app\models\Skill;
-use competencyManagement\skill\EmployeeSkillCalculator;
+use competencyManagement\employee\EmployeeSkillCalculator;
 
 class EmployeeSkillCalculationTest extends \Codeception\Test\Unit
 {

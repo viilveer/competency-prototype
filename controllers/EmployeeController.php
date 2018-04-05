@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\models\EmployeeRole;
 use app\models\EmployeeRoleSearch;
+use app\models\Skill;
+use competencyManagement\employee\EmployeeAnalyzer;
 use Yii;
 use app\models\Employee;
 use app\models\EmployeeSearch;
@@ -54,11 +56,15 @@ class EmployeeController extends Controller
      */
     public function actionView(int $id)
     {
+        $model = $this->findModel($id);
         $employeeRoleSearchModel = new EmployeeRoleSearch();
         $employeeRoleDataProvider = $employeeRoleSearchModel->search(['user_id' => $id]);
+        $companySkills = Skill::findAll(['company_id' => $model->company_id]);
+        $employeeAnalyzer = new EmployeeAnalyzer($model, $companySkills);
 
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'employeeAnalyzer' => $employeeAnalyzer,
             'employeeRoleSearchModel' => $employeeRoleSearchModel,
             'employeeRoleDataProvider' => $employeeRoleDataProvider,
         ]);

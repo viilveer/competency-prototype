@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 
 /**
  * This is the model class for table "employee".
@@ -15,6 +14,7 @@ use Yii;
  *
  * @property Company $company
  * @property EmployeeRole[] $employeeRoles
+ * @property EmployeeSkill[] $employeeSkills
  */
 class Employee extends \yii\db\ActiveRecord
 {
@@ -36,7 +36,7 @@ class Employee extends \yii\db\ActiveRecord
             [['age', 'company_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['gender'], 'string', 'max' => 32],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
+            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
         ];
     }
 
@@ -59,7 +59,7 @@ class Employee extends \yii\db\ActiveRecord
      */
     public function getCompany()
     {
-        return $this->hasOne(Company::class, ['id' => 'company_id']);
+        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 
     /**
@@ -67,7 +67,24 @@ class Employee extends \yii\db\ActiveRecord
      */
     public function getEmployeeRoles()
     {
-        return $this->hasMany(EmployeeRole::class, ['employee_id' => 'id']);
+        return $this->hasMany(EmployeeRole::className(), ['employee_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployeeSkills()
+    {
+        return $this->hasMany(EmployeeSkill::className(), ['employee_id' => 'id']);
+    }
+
+    /**
+     * Needed for testing
+     * @param EmployeeSkill[] $employeeSkills
+     */
+    public function setEmployeeSkills(array $employeeSkills)
+    {
+        $this->employeeSkills = $employeeSkills;
     }
 
     /**

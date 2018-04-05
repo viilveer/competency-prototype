@@ -5,8 +5,8 @@ namespace app\controllers;
 use app\models\Employee;
 use app\models\EmployeeSkill;
 use app\models\Skill;
-use competencyManagement\skill\EmployeeSkillAssigner;
-use competencyManagement\skill\EmployeeSkillCalculator;
+use competencyManagement\employee\EmployeeAnalyzer;
+use competencyManagement\employee\EmployeeSkillAssigner;
 use competencyManagement\skill\SkillTreeBuilder;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -29,19 +29,23 @@ class EmployeeSkillController extends Controller
      *
      * @param int $employeeId
      * @return string
+     * @throws NotFoundHttpException
      */
-    public function actionTree(int $employeeId = null)
+    public function actionTree(int $employeeId)
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $skills = Skill::find()->all();
-        $tree = (new SkillTreeBuilder($skills))->getTree();
-        $employeeSkills = EmployeeSkill::find()->where(['employee_id' => $employeeId])->all();
+        $employee = Employee::findOne($employeeId);
+        if ($employee === null) {
+            throw new NotFoundHttpException('Employee not found');
+        }
 
-        $calculator = new EmployeeSkillCalculator($skills, $employeeSkills);
+        $skills = Skill::find()->where(['company_id' => $employee->company_id])->all();
+        $tree = (new SkillTreeBuilder($skills))->getTree();
+        $employeeSkillHelper = new EmployeeAnalyzer($employee, $skills);
 
         return (new EmployeeSkillAssigner($tree))
-            ->assignSkillLevels(ArrayHelper::merge($employeeSkills, $calculator->getEmployeeCalculatedSkills()))
+            ->assignSkillLevels($employeeSkillHelper->getAllSkills())
             ->getSkillTree();
     }
 
@@ -50,15 +54,16 @@ class EmployeeSkillController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView(int $employeeId = null)
+    public function actionView(int $employeeId)
     {
         $employee = Employee::findOne($employeeId);
         if ($employee === null) {
             throw new NotFoundHttpException('Employee not found');
         }
-        $skills = Skill::find()->all();
+        $skills = Skill::find()->where(['company_id' => $employee->company_id])->all();
+        $employeeSkillHelper = new EmployeeAnalyzer($employee, $skills);
         $employeeSkills = ArrayHelper::index(
-            EmployeeSkill::find()->where(['employee_id' => $employeeId])->all(),
+            $employeeSkillHelper->getAssignedEmployeeSkills(),
             'skill_id'
         );
 

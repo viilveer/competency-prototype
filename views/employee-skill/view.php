@@ -45,7 +45,6 @@ $this->registerJsFile(
         <?php
         foreach ($skills as $skill) {
             $employeeSkill = \yii\helpers\ArrayHelper::getValue($employeeSkills, $skill->id);
-
             echo Html::tag(
                 'tr',
                 sprintf(

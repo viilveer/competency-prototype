@@ -4,7 +4,7 @@ namespace tests\models;
 
 use app\models\EmployeeSkill;
 use app\models\Skill;
-use competencyManagement\skill\EmployeeSkillAssigner;
+use competencyManagement\employee\EmployeeSkillAssigner;
 use competencyManagement\skill\SkillTreeBuilder;
 
 class EmployeeSkillAssignerTest extends \Codeception\Test\Unit

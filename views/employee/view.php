@@ -1,5 +1,6 @@
 <?php
 
+use app\models\EmployeeRole;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -7,10 +8,14 @@ use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Employee */
+/* @var $employeeAnalyzer \competencyManagement\employee\EmployeeAnalyzer */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Companies', 'url' => ['company/index']];
-$this->params['breadcrumbs'][] = ['label' => $model->company->name, 'url' => ['company/view', 'id' => $model->company_id]];
+$this->params['breadcrumbs'][] = [
+    'label' => $model->company->name,
+    'url' => ['company/view', 'id' => $model->company_id]
+];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="employee-view">
@@ -20,7 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add role', ['employee-role/create', 'employeeId' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Manage skills', ['employee-skill/view', 'employeeId' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Manage skills', ['employee-skill/view', 'employeeId' => $model->id],
+            ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -46,14 +52,21 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $employeeRoleSearchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'role.name',
+            [
+                'content' => function (EmployeeRole $employeeRole, $key, $index, $column) use ($employeeAnalyzer) {
+                    return sprintf(
+                        '%s (Competency: %s)',
+                        $employeeRole->role->name,
+                        Yii::$app->formatter->asPercent($employeeAnalyzer->getEmployeeCompetency($employeeRole->role))
+                    );
+                }
+            ],
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' =>  '{delete}',
+                'template' => '{delete}',
                 'urlCreator' => function ($action, $model, $key, $index) {
-                    return Url::to(['/employee-role/'.$action, 'id' => $model->id]);
+                    return Url::to(['/employee-role/' . $action, 'id' => $model->id]);
                 }
             ],
         ],
