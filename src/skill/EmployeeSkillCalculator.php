@@ -37,7 +37,9 @@ class EmployeeSkillCalculator
         $this->employeeSkills = ArrayHelper::index($employeeSkills, 'skill_id');
     }
 
-
+    /**
+     * Creates placeholders for employee missing skills
+     */
     private function createVirtualSkills()
     {
         $skillIds = array_keys($this->skillsFlat);
@@ -52,6 +54,9 @@ class EmployeeSkillCalculator
         }
     }
 
+    /**
+     * Calculates employee skills by first going upwards in skill tree and then downwards
+     */
     private function calculateSkills()
     {
         foreach ($this->skillsFlat as $skill) {
@@ -68,7 +73,12 @@ class EmployeeSkillCalculator
         $this->processSkillsDownwards();
     }
 
-    private function processSkillUpwards(Skill $skill, $level)
+    /**
+     * Calculates skills upwards in the skill tree
+     * @param Skill $skill Skill to be processed
+     * @param float $level previous skill level
+     */
+    private function processSkillUpwards(Skill $skill, float $level)
     {
         /** @var EmployeeSkill $calculatedSkill */
         $calculatedSkill = ArrayHelper::getValue($this->virtualEmployeeSkills, $skill->id);
@@ -83,7 +93,9 @@ class EmployeeSkillCalculator
         }
     }
 
-
+    /**
+     * Calculates skills downwards recursively until no skills left to process
+     */
     private function processSkillsDownwards()
     {
         while (($employeeSkill = $this->getSkillWithoutLevel()) !== null) {
@@ -96,6 +108,11 @@ class EmployeeSkillCalculator
         }
     }
 
+    /**
+     * Finds employee skill from calculated and non-calculated containers
+     * @param int $skillId
+     * @return EmployeeSkill
+     */
     private function getEmployeeSkill(int $skillId)
     {
         return ArrayHelper::getValue(
@@ -105,7 +122,11 @@ class EmployeeSkillCalculator
         );
     }
 
-    private function getSkillWithoutLevel(): ? EmployeeSkill
+    /**
+     * Finds skill which does not have calculated level
+     * @return EmployeeSkill
+     */
+    private function getSkillWithoutLevel()
     {
         foreach ($this->virtualEmployeeSkills as $employeeSkill) {
             if ($employeeSkill->level === null) {
@@ -115,6 +136,10 @@ class EmployeeSkillCalculator
         return null;
     }
 
+    /**
+     * Calculates and then returns all employee skills
+     * @return EmployeeSkill[]
+     */
     public function getEmployeeCalculatedSkills(): array
     {
         if (count($this->employeeSkills)) {

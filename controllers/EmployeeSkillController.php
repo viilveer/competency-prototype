@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Employee;
 use app\models\EmployeeSkill;
 use app\models\Skill;
 use competencyManagement\skill\EmployeeSkillAssigner;
@@ -9,8 +10,8 @@ use competencyManagement\skill\EmployeeSkillCalculator;
 use competencyManagement\skill\SkillTreeBuilder;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\View;
 
 class EmployeeSkillController extends Controller
 {
@@ -26,10 +27,10 @@ class EmployeeSkillController extends Controller
     /**
      * Displays homepage.
      *
-     * @param null $employeeId
+     * @param int $employeeId
      * @return string
      */
-    public function actionTree($employeeId = null)
+    public function actionTree(int $employeeId = null)
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -45,15 +46,55 @@ class EmployeeSkillController extends Controller
     }
 
     /**
-     * @param null $employeeId
+     * @param int|null $employeeId
      * @return string
+     * @throws NotFoundHttpException
      */
-    public function actionSkills($employeeId = null)
+    public function actionView(int $employeeId = null)
     {
-        $this->getView()->registerJsFile(
-            'https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.js',
-            ['position' => View::POS_HEAD]
+        $employee = Employee::findOne($employeeId);
+        if ($employee === null) {
+            throw new NotFoundHttpException('Employee not found');
+        }
+        $skills = Skill::find()->all();
+        $employeeSkills = ArrayHelper::index(
+            EmployeeSkill::find()->where(['employee_id' => $employeeId])->all(),
+            'skill_id'
         );
-        return $this->render('skills', ['employeeId' => $employeeId]);
+
+        return $this->render(
+            'view',
+            [
+                'employee' => $employee,
+                'employeeId' => $employeeId,
+                'employeeSkills' => $employeeSkills,
+                'skills' => $skills,
+            ]
+        );
+    }
+
+    /**
+     * @param int $employeeId
+     * @param int $skillId
+     * @return bool|false|int
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionUpdate(int $employeeId, int $skillId)
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $params = ['employee_id' => $employeeId, 'skill_id' => $skillId];
+        $employeeSkill = EmployeeSkill::find()->where($params)->one();
+        if ($employeeSkill === null) {
+            $employeeSkill = new EmployeeSkill();
+        }
+        if (empty(\Yii::$app->request->post('skillLevel'))) {
+            return $employeeSkill->delete();
+        }
+
+        $employeeSkill->setAttributes($params);
+        $employeeSkill->level = \Yii::$app->request->post('skillLevel');
+        return $employeeSkill->save();
     }
 }
