@@ -13,9 +13,11 @@ use Yii;
  * @property string $name
  * @property string $description
  *
+ * @property EmployeeCourseSkill[] $employeeCourseSkills
  * @property EmployeeSkill[] $employeeSkills
+ * @property RoleSkill[] $roleSkills
  * @property Company $company
- * @property Skill $skill
+ * @property Skill $parentSkill
  * @property Skill[] $skills
  */
 class Skill extends \yii\db\ActiveRecord
@@ -38,8 +40,8 @@ class Skill extends \yii\db\ActiveRecord
             [['company_id', 'parent_skill_id'], 'integer'],
             [['description'], 'string'],
             [['name'], 'string', 'max' => 255],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
-            [['parent_skill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Skill::class, 'targetAttribute' => ['parent_skill_id' => 'id']],
+            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
+            [['parent_skill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Skill::className(), 'targetAttribute' => ['parent_skill_id' => 'id']],
         ];
     }
 
@@ -60,9 +62,25 @@ class Skill extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getEmployeeCourseSkills()
+    {
+        return $this->hasMany(EmployeeCourseSkill::className(), ['skill_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getEmployeeSkills()
     {
-        return $this->hasMany(EmployeeSkill::class, ['skill_id' => 'id']);
+        return $this->hasMany(EmployeeSkill::className(), ['skill_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoleSkills()
+    {
+        return $this->hasMany(RoleSkill::className(), ['skill_id' => 'id']);
     }
 
     /**
@@ -70,7 +88,7 @@ class Skill extends \yii\db\ActiveRecord
      */
     public function getCompany()
     {
-        return $this->hasOne(Company::class, ['id' => 'company_id']);
+        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 
     /**
@@ -78,15 +96,15 @@ class Skill extends \yii\db\ActiveRecord
      */
     public function getParentSkill()
     {
-        return $this->hasOne(Skill::class, ['id' => 'parent_skill_id']);
+        return $this->hasOne(Skill::className(), ['id' => 'parent_skill_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getParentSkills()
+    public function getSkills()
     {
-        return $this->hasMany(Skill::class, ['parent_skill_id' => 'id']);
+        return $this->hasMany(Skill::className(), ['parent_skill_id' => 'id']);
     }
 
     /**

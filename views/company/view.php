@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add employee', ['/employee/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add role', ['/role/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Add course', ['/course/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -68,6 +69,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'urlCreator' => function ($action, $model, $key, $index) {
                     return Url::to(['/role/' . $action, 'id' => $model->id]);
+                }
+            ],
+        ],
+    ]); ?>
+
+    <h3>Courses</h3>
+    <?= GridView::widget([
+        'dataProvider' => $courseDataProvider,
+        'filterModel' => $courseSearchForm,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            'name',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'urlCreator' => function ($action, $model, $key, $index) {
+                    return Url::to(['/course/' . $action, 'id' => $model->id]);
                 }
             ],
         ],

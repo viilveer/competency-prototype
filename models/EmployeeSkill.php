@@ -10,7 +10,7 @@ use Yii;
  * @property int $id
  * @property int $employee_id
  * @property int $skill_id
- * @property int $level
+ * @property float $level
  *
  * @property Employee $employee
  * @property Skill $skill
@@ -32,7 +32,8 @@ class EmployeeSkill extends \yii\db\ActiveRecord
     {
         return [
             [['employee_id', 'skill_id', 'level'], 'required'],
-            [['employee_id', 'skill_id', 'level'], 'integer'],
+            [['employee_id', 'skill_id'], 'integer'],
+            [['level'], 'number'],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],
             [['skill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Skill::class, 'targetAttribute' => ['skill_id' => 'id']],
         ];

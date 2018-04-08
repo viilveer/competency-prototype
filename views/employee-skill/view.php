@@ -38,7 +38,6 @@ $this->registerJsFile(
             <th>#</th>
             <th>Skill</th>
             <th>Level</th>
-            <th class="action-column">&nbsp;</th>
         </tr>
         </thead>
         <tbody>
@@ -48,12 +47,12 @@ $this->registerJsFile(
             echo Html::tag(
                 'tr',
                 sprintf(
-                    '%s%s%s%s',
+                    '%s%s%s',
                     Html::tag('td'),
                     Html::tag('td', $skill->name),
-                    Html::tag('td', Html::textInput('skill', $employeeSkill ? $employeeSkill->level : null, ['class' => 'form-control'])),
-                    Html::tag('td', Html::a('Update', ['employee-skill/update', 'employeeId' => $employeeId, 'skillId' => $skill->id], ['class' => 'js-update']))
-                )
+                    Html::tag('td', Html::textInput('skill', $employeeSkill ? $employeeSkill->level : null, ['class' => 'form-control']))
+                ),
+                ['data-update' => \yii\helpers\Url::to(['employee-skill/update', 'employeeId' => $employeeId, 'skillId' => $skill->id])]
             );
         }
         ?>

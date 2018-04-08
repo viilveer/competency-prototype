@@ -10,8 +10,10 @@ use Yii;
  * @property int $id
  * @property string $name
  *
+ * @property Course[] $courses
  * @property Employee[] $employees
  * @property Role[] $roles
+ * @property Skill[] $skills
  */
 class Company extends \yii\db\ActiveRecord
 {
@@ -48,9 +50,17 @@ class Company extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCourses()
+    {
+        return $this->hasMany(Course::className(), ['company_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getEmployees()
     {
-        return $this->hasMany(Employee::class, ['company_id' => 'id']);
+        return $this->hasMany(Employee::className(), ['company_id' => 'id']);
     }
 
     /**
@@ -58,7 +68,15 @@ class Company extends \yii\db\ActiveRecord
      */
     public function getRoles()
     {
-        return $this->hasMany(Role::class, ['company_id' => 'id']);
+        return $this->hasMany(Role::className(), ['company_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkills()
+    {
+        return $this->hasMany(Skill::className(), ['company_id' => 'id']);
     }
 
     /**

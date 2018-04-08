@@ -5,25 +5,23 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "role".
+ * This is the model class for table "course".
  *
  * @property int $id
- * @property string $name
- * @property string $description
  * @property int $company_id
+ * @property string $name
  *
- * @property EmployeeRole[] $employeeRoles
  * @property Company $company
- * @property RoleSkill[] $roleSkills
+ * @property EmployeeCourse[] $employeeCourses
  */
-class Role extends \yii\db\ActiveRecord
+class Course extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'role';
+        return 'course';
     }
 
     /**
@@ -32,8 +30,7 @@ class Role extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'description', 'company_id'], 'required'],
-            [['description'], 'string'],
+            [['company_id', 'name'], 'required'],
             [['company_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
@@ -47,18 +44,9 @@ class Role extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'description' => 'Description',
             'company_id' => 'Company ID',
+            'name' => 'Name',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEmployeeRoles()
-    {
-        return $this->hasMany(EmployeeRole::className(), ['role_id' => 'id']);
     }
 
     /**
@@ -72,26 +60,17 @@ class Role extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRoleSkills()
+    public function getEmployeeCourses()
     {
-        return $this->hasMany(RoleSkill::className(), ['role_id' => 'id']);
-    }
-
-    /**
-     * Needed for testing
-     * @param RoleSkill[] $roleSkills
-     */
-    public function setRoleSkills(array $roleSkills)
-    {
-        $this->roleSkills = $roleSkills;
+        return $this->hasMany(EmployeeCourse::className(), ['course_id' => 'id']);
     }
 
     /**
      * @inheritdoc
-     * @return RoleQuery the active query used by this AR class.
+     * @return CourseQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new RoleQuery(get_called_class());
+        return new CourseQuery(get_called_class());
     }
 }

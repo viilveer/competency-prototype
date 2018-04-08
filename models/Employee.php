@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 
 /**
  * This is the model class for table "employee".
@@ -13,6 +14,7 @@ namespace app\models;
  * @property int $company_id
  *
  * @property Company $company
+ * @property EmployeeCourse[] $employeeCourses
  * @property EmployeeRole[] $employeeRoles
  * @property EmployeeSkill[] $employeeSkills
  */
@@ -60,6 +62,14 @@ class Employee extends \yii\db\ActiveRecord
     public function getCompany()
     {
         return $this->hasOne(Company::className(), ['id' => 'company_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployeeCourses()
+    {
+        return $this->hasMany(EmployeeCourse::className(), ['employee_id' => 'id']);
     }
 
     /**

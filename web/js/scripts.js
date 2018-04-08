@@ -18,10 +18,9 @@ $(document).ready(function () {
     };
     var network = new vis.Network(container.get(0), {}, options);
 
-    $('a.js-update').click(function () {
-        var skillLevel = $('input', $(this).parents('tr')).val();
-        $.post($(this).attr('href'), { skillLevel }, function (data) {
-            console.log(data);
+    $(document).on('keyup', 'input.form-control', function () {
+        var skillLevel = $(this).val();
+        $.post($(this).parents('tr').data('update'), { skillLevel }, function (data) {
             setVisJsData();
         });
 
@@ -56,9 +55,12 @@ $(document).ready(function () {
     }
 
     function getColor(level) {
-        //value from 0 to 1
-        var hue = ((1 - level) * 120).toString(10);
-        return ["hsl(", hue, ",100%,50%)"].join("");
+        console.log(level);
+        var lightness = 30;
+        if (level > 30) {
+            lightness = level;
+        }
+        return ["hsl(120,100%,"+ lightness +"%)"].join("");
     }
 
 
@@ -71,7 +73,7 @@ $(document).ready(function () {
                     label: item.name + '(' + item.employeeSkillLevel + ')',
                     level: item.level,
                     widthConstraint: {maximum: 170},
-                    color: getColor(1 - item.employeeSkillLevel / 5)
+                    color: {background:getColor(100 - item.employeeSkillLevel * 10), border:'#000000'}
                 };
             }));
             // create an array with edges
