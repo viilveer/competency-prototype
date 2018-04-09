@@ -2,21 +2,18 @@
 
 namespace app\controllers;
 
-use app\models\CompetencyModelSearch;
-use app\models\CourseSearchForm;
-use app\models\EmployeeSearch;
-use app\models\RoleSearch;
+use app\models\CompetencyModelSkillSearch;
 use Yii;
-use app\models\Company;
-use app\models\CompanySearch;
+use app\models\CompetencyModel;
+use app\models\CompetencyModelSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * CompanyController implements the CRUD actions for Company model.
+ * CompetencyModelController implements the CRUD actions for CompetencyModel model.
  */
-class CompanyController extends Controller
+class CompetencyModelController extends Controller
 {
     /**
      * @inheritdoc
@@ -34,12 +31,12 @@ class CompanyController extends Controller
     }
 
     /**
-     * Lists all Company models.
+     * Lists all CompetencyModel models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new CompanySearch();
+        $searchModel = new CompetencyModelSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -49,51 +46,35 @@ class CompanyController extends Controller
     }
 
     /**
-     * Displays a single Company model.
+     * Displays a single CompetencyModel model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView(int $id)
+    public function actionView($id)
     {
-        $params = Yii::$app->request->getQueryParams();
-        $employeeSearchModel = new EmployeeSearch();
-        $employeeSearchModel->company_id = $id;
-        $employeeDataProvider = $employeeSearchModel->search($params);
-
-        $roleSearchModel = new RoleSearch();
-        $roleSearchModel->company_id = $id;
-        $roleDataProvider = $roleSearchModel->search($params);
-
-        $courseSearchForm = new CourseSearchForm();
-        $courseSearchForm->company_id = $id;
-        $courseDataProvider = $courseSearchForm->search($params);
-
-        $competencyModelSearchForm = new CompetencyModelSearch();
-        $competencyModelSearchForm->company_id = $id;
-        $competencyDataProvider = $competencyModelSearchForm->search($params);
+        $model = $this->findModel($id);
+        $competencyModelSkillSearch = new CompetencyModelSkillSearch();
+        $competencyModelSkillSearch->competency_model_id = $id;
+        $competencyModelDataProvider = $competencyModelSkillSearch->search(Yii::$app->request->queryParams);
 
         return $this->render('view', [
-            'model' => $this->findModel($id),
-            'employeeDataProvider' => $employeeDataProvider,
-            'employeeSearchModel' => $employeeSearchModel,
-            'roleSearchModel' => $roleSearchModel,
-            'roleDataProvider' => $roleDataProvider,
-            'courseSearchForm' => $courseSearchForm,
-            'courseDataProvider' => $courseDataProvider,
-            'competencyModelSearchForm' => $competencyModelSearchForm,
-            'competencyDataProvider' => $competencyDataProvider,
+            'model' => $model,
+            'competencyModelSkillSearch' => $competencyModelSkillSearch,
+            'competencyModelDataProvider' => $competencyModelDataProvider
         ]);
     }
 
     /**
-     * Creates a new Company model.
+     * Creates a new CompetencyModel model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     * @param int $companyId
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate(int $companyId)
     {
-        $model = new Company();
+        $model = new CompetencyModel();
+        $model->company_id = $companyId;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -105,7 +86,7 @@ class CompanyController extends Controller
     }
 
     /**
-     * Updates an existing Company model.
+     * Updates an existing CompetencyModel model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -125,14 +106,11 @@ class CompanyController extends Controller
     }
 
     /**
-     * Deletes an existing Company model.
+     * Deletes an existing CompetencyModel model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
-     * @throws \Exception
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -142,15 +120,15 @@ class CompanyController extends Controller
     }
 
     /**
-     * Finds the Company model based on its primary key value.
+     * Finds the CompetencyModel model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Company the loaded model
+     * @return CompetencyModel the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Company::findOne($id)) !== null) {
+        if (($model = CompetencyModel::findOne($id)) !== null) {
             return $model;
         }
 

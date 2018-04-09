@@ -24,7 +24,9 @@ class EmployeeCompetencyCalculator
      */
     public function __construct(array $roleSkills, array $employeeSkills)
     {
-        $this->roleSkills = ArrayHelper::index($roleSkills, 'skill_id');
+        $this->roleSkills = ArrayHelper::index($roleSkills, function (RoleSkill $skill) {
+            return $skill->competencyModelSkill->skill_id;
+        });
         $this->employeeSkills = ArrayHelper::index($employeeSkills, 'skill_id');
     }
 

@@ -11,9 +11,11 @@ use Yii;
  * @property string $name
  * @property string $description
  * @property int $company_id
+ * @property int $competency_model_id
  *
  * @property EmployeeRole[] $employeeRoles
  * @property Company $company
+ * @property CompetencyModel $competencyModel
  * @property RoleSkill[] $roleSkills
  */
 class Role extends \yii\db\ActiveRecord
@@ -34,9 +36,10 @@ class Role extends \yii\db\ActiveRecord
         return [
             [['name', 'description', 'company_id'], 'required'],
             [['description'], 'string'],
-            [['company_id'], 'integer'],
+            [['company_id', 'competency_model_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
+            [['competency_model_id'], 'exist', 'skipOnError' => true, 'targetClass' => CompetencyModel::className(), 'targetAttribute' => ['competency_model_id' => 'id']],
         ];
     }
 
@@ -50,6 +53,7 @@ class Role extends \yii\db\ActiveRecord
             'name' => 'Name',
             'description' => 'Description',
             'company_id' => 'Company ID',
+            'competency_model_id' => 'Competency Model ID',
         ];
     }
 
@@ -72,18 +76,17 @@ class Role extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRoleSkills()
+    public function getCompetencyModel()
     {
-        return $this->hasMany(RoleSkill::className(), ['role_id' => 'id']);
+        return $this->hasOne(CompetencyModel::className(), ['id' => 'competency_model_id']);
     }
 
     /**
-     * Needed for testing
-     * @param RoleSkill[] $roleSkills
+     * @return \yii\db\ActiveQuery
      */
-    public function setRoleSkills(array $roleSkills)
+    public function getRoleSkills()
     {
-        $this->roleSkills = $roleSkills;
+        return $this->hasMany(RoleSkill::className(), ['role_id' => 'id']);
     }
 
     /**
@@ -93,5 +96,14 @@ class Role extends \yii\db\ActiveRecord
     public static function find()
     {
         return new RoleQuery(get_called_class());
+    }
+
+    /**
+     * Needed for testing
+     * @param RoleSkill[] $roleSkills
+     */
+    public function setRoleSkills(array $roleSkills)
+    {
+        $this->roleSkills = $roleSkills;
     }
 }

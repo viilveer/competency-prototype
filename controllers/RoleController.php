@@ -2,13 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\CompetencyModelSkill;
 use app\models\EmployeeRole;
+use app\models\RoleSkill;
 use Yii;
 use app\models\Role;
 use app\models\RoleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * RoleController implements the CRUD actions for Role model.
@@ -53,8 +56,9 @@ class RoleController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
@@ -133,5 +137,30 @@ class RoleController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * @param int $competencyModelSkillId
+     * @param int $roleId
+     * @return bool|false|int
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionSkillUpdate(int $competencyModelSkillId, int $roleId)
+    {
+        $params = ['competency_model_skill_id' => $competencyModelSkillId, 'role_id' => $roleId];
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $roleSkill = RoleSkill::findOne($params);
+        if ($roleSkill === null) {
+            $roleSkill = new RoleSkill();
+        }
+        if (empty(\Yii::$app->request->post('skillLevel'))) {
+            return $roleSkill->delete();
+        }
+
+        $roleSkill->setAttributes($params);
+        $roleSkill->level = \Yii::$app->request->post('skillLevel');
+        return $roleSkill->save();
     }
 }

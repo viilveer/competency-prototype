@@ -2,17 +2,18 @@
 
 namespace app\models;
 
+use Yii;
 
 /**
  * This is the model class for table "role_skill".
  *
  * @property int $id
  * @property int $role_id
- * @property int $skill_id
+ * @property int $competency_model_skill_id
  * @property double $level
  *
  * @property Role $role
- * @property Skill $skill
+ * @property CompetencyModelSkill $competencyModelSkill
  */
 class RoleSkill extends \yii\db\ActiveRecord
 {
@@ -30,11 +31,11 @@ class RoleSkill extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['role_id', 'skill_id', 'level'], 'required'],
-            [['role_id', 'skill_id'], 'integer'],
+            [['role_id', 'competency_model_skill_id', 'level'], 'required'],
+            [['role_id', 'competency_model_skill_id'], 'integer'],
             [['level'], 'number'],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::className(), 'targetAttribute' => ['role_id' => 'id']],
-            [['skill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Skill::className(), 'targetAttribute' => ['skill_id' => 'id']],
+            [['competency_model_skill_id'], 'exist', 'skipOnError' => true, 'targetClass' => CompetencyModelSkill::className(), 'targetAttribute' => ['competency_model_skill_id' => 'id']],
         ];
     }
 
@@ -46,7 +47,7 @@ class RoleSkill extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'role_id' => 'Role ID',
-            'skill_id' => 'Skill ID',
+            'competency_model_skill_id' => 'Competency Model Skill ID',
             'level' => 'Level',
         ];
     }
@@ -62,9 +63,18 @@ class RoleSkill extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSkill()
+    public function getCompetencyModelSkill()
     {
-        return $this->hasOne(Skill::className(), ['id' => 'skill_id']);
+        return $this->hasOne(CompetencyModelSkill::className(), ['id' => 'competency_model_skill_id']);
+    }
+
+    /**
+     * For testing purposes only
+     * @param CompetencyModelSkill $competencyModelSkill
+     */
+    public function setCompetencyModelSkill(CompetencyModelSkill $competencyModelSkill)
+    {
+        $this->competencyModelSkill = $competencyModelSkill;
     }
 
     /**

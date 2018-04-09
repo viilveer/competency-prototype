@@ -2,6 +2,7 @@
 
 namespace tests\models;
 
+use app\models\CompetencyModelSkill;
 use app\models\Employee;
 use app\models\EmployeeSkill;
 use app\models\Role;
@@ -28,7 +29,7 @@ class EmployeeSuitabilityTest extends \Codeception\Test\Unit
         $role = new Role([
             'name' => 'Test role',
             'roleSkills' => [
-                new RoleSkill(['skill_id' => 2, 'level' => 4])
+                new RoleSkill(['competencyModelSkill' => new CompetencyModelSkill(['skill_id' => 2]), 'level' => 4])
             ],
         ]);
 
@@ -51,7 +52,7 @@ class EmployeeSuitabilityTest extends \Codeception\Test\Unit
         $role = new Role([
             'name' => 'Test role',
             'roleSkills' => [
-                new RoleSkill(['skill_id' => 2, 'level' => 4])
+                new RoleSkill(['competencyModelSkill' => new CompetencyModelSkill(['skill_id' => 2]), 'level' => 4])
             ],
         ]);
         $employeeAnalyzer = new EmployeeAnalyzer($employee, $skills);
@@ -75,7 +76,7 @@ class EmployeeSuitabilityTest extends \Codeception\Test\Unit
         $role = new Role([
             'name' => 'Test role',
             'roleSkills' => [
-                new RoleSkill(['skill_id' => 2, 'level' => 0.25])
+                new RoleSkill(['competencyModelSkill' => new CompetencyModelSkill(['skill_id' => 2]), 'level' => 0.25])
             ],
         ]);
         $employeeAnalyzer = new EmployeeAnalyzer($employee, $skills);

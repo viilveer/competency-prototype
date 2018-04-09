@@ -1,22 +1,20 @@
 <?php
 
-use app\models\CompetencyModel;
+use app\models\Skill;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Role */
+/* @var $model app\models\CompetencyModelSkill */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="role-form">
+<div class="competency-model-skill-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'competency_model_id')->dropDownList(ArrayHelper::map(CompetencyModel::findAll(['company_id' => $model->company_id]), 'id', 'name')) ?>
+    <?= $form->field($model, 'skill_id')->dropDownList(ArrayHelper::map(Skill::findAll(['company_id' => $model->competencyModel->company_id]), 'id', 'name')) ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 

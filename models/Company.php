@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property string $name
  *
+ * @property CompetencyModel[] $competencyModels
  * @property Course[] $courses
  * @property Employee[] $employees
  * @property Role[] $roles
@@ -45,6 +46,14 @@ class Company extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCompetencyModels()
+    {
+        return $this->hasMany(CompetencyModel::className(), ['company_id' => 'id']);
     }
 
     /**

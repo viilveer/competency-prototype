@@ -21,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Add employee', ['/employee/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add role', ['/role/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add course', ['/course/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Add competency model', ['/competency-model/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -50,6 +51,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'urlCreator' => function ($action, $model, $key, $index) {
                     return Url::to(['/employee/'.$action, 'id' => $model->id]);
+                }
+            ],
+        ],
+    ]); ?>
+
+    <h3>Competency models</h3>
+    <?= GridView::widget([
+        'dataProvider' => $competencyDataProvider,
+        'filterModel' => $competencyModelSearchForm,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            'name',
+            'type',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'urlCreator' => function ($action, $model, $key, $index) {
+                    return Url::to(['/competency-model/' . $action, 'id' => $model->id]);
                 }
             ],
         ],
