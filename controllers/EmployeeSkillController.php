@@ -41,12 +41,12 @@ class EmployeeSkillController extends Controller
         }
 
         $skills = Skill::find()->where(['company_id' => $employee->company_id])->all();
-        $tree = (new SkillTreeBuilder($skills))->getTree();
+        $tree = (new SkillTreeBuilder($skills))->getTrees();
         $employeeSkillHelper = new EmployeeAnalyzer($employee, $skills);
 
         return (new EmployeeSkillAssigner($tree))
             ->assignSkillLevels($employeeSkillHelper->getAllSkills())
-            ->getSkillTree();
+            ->getSkillTrees();
     }
 
     /**

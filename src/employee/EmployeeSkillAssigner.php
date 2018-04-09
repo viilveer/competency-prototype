@@ -13,15 +13,15 @@ class EmployeeSkillAssigner
     /**
      * @var SkillTreeModel
      */
-    private $skillTree;
+    private $skillTrees;
 
     /**
      * EmployeeSkillAssigner constructor.
-     * @param SkillTreeModel $skillTree
+     * @param SkillTreeModel[] $skillTrees
      */
-    public function __construct(SkillTreeModel $skillTree)
+    public function __construct(array $skillTrees)
     {
-        $this->skillTree = $skillTree;
+        $this->skillTrees = $skillTrees;
     }
 
     /**
@@ -31,7 +31,9 @@ class EmployeeSkillAssigner
      */
     public function assignSkillLevels(array $employeeSkills)
     {
-        $this->skillTree = $this->assignSkillLevelsRecursively($this->skillTree, $employeeSkills);
+        foreach ($this->skillTrees as $id => $skillTree) {
+            $this->skillTrees[$id] = $this->assignSkillLevelsRecursively($skillTree, $employeeSkills);
+        }
         return $this;
     }
 
@@ -56,10 +58,10 @@ class EmployeeSkillAssigner
 
 
     /**
-     * @return SkillTreeModel
+     * @return SkillTreeModel[]
      */
-    public function getSkillTree(): SkillTreeModel
+    public function getSkillTrees(): array
     {
-        return $this->skillTree;
+        return $this->skillTrees;
     }
 }

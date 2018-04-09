@@ -14,7 +14,7 @@ class SkillTreeBuilder
     private $skills;
 
     /**
-     * @var SkillTreeModel
+     * @var SkillTreeModel[]
      */
     private $tree;
 
@@ -29,16 +29,13 @@ class SkillTreeBuilder
 
     /**
      * Returns skill tree from Skill models
-     * @return SkillTreeModel
+     * @return SkillTreeModel[]
      */
-    public function getTree()
+    public function getTrees()
     {
         foreach ($this->skills as $skill) {
             if ($skill->parent_skill_id === null) {
-                if (!empty($this->tree)) {
-                    throw new \RuntimeException('Two nodes without parent skill id');
-                }
-                $this->tree = new SkillTreeModel(0, $skill, $this->skills);
+                $this->tree[] = new SkillTreeModel(0, $skill, $this->skills);
             }
         }
         return $this->tree;

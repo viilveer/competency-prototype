@@ -65,19 +65,30 @@ $(document).ready(function () {
 
 
     function setVisJsData() {
-        $.getJSON(container.data('remote-url'), function (tree) {
+        $.getJSON(container.data('remote-url'), function (trees) {
             // create an array with nodes
-            var nodes = new vis.DataSet([tree].concat(tree.children.reduce(flat, [])).map(function (item) {
-                return {
-                    id: item.id,
-                    label: item.name + '(' + item.employeeSkillLevel + ')',
-                    level: item.level,
-                    widthConstraint: {maximum: 170},
-                    color: {background:getColor(100 - item.employeeSkillLevel * 10), border:'#000000'}
-                };
+            var formattedTrees = trees.map(function (tree) {
+                return [tree].concat(tree.children.reduce(flat, [])).map(function (item) {
+                    return {
+                        id: item.id,
+                        label: item.name + '(' + item.employeeSkillLevel + ')',
+                        level: item.level,
+                        widthConstraint: {maximum: 170},
+                        color: {background:getColor(100 - item.employeeSkillLevel * 10), border:'#000000'}
+                    };
+                })
+            });
+            console.log(formattedTrees);
+            var nodes = new vis.DataSet(formattedTrees.reduce(function (a, b) {
+                return a.concat(b);
             }));
             // create an array with edges
-            var edges = new vis.DataSet(getEdges(tree, []));
+            var formattedNestedEdges = trees.map(function (tree) {
+                return getEdges(tree, [])
+            });
+            var edges = new vis.DataSet(formattedNestedEdges.reduce(function (a, b) {
+                return a.concat(b);
+            }));
 
             // create a network
             network.setData({

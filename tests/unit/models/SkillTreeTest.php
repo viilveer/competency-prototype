@@ -14,10 +14,10 @@ class SkillTreeTest extends \Codeception\Test\Unit
             new Skill(['id' => 2, 'name' => 'Test Skill 2', 'parent_skill_id' => 1])
         ];
 
-        $tree = (new SkillTreeBuilder($skills))->getTree();
-        expect($tree->getId())->equals($skills[0]->id);
-        expect($tree->getChildren());
-        expect($tree->getChildren()[0]->getId())->equals($skills[1]->id);
+        $trees = (new SkillTreeBuilder($skills))->getTrees();
+        expect($trees[0]->getId())->equals($skills[0]->id);
+        expect($trees[0]->getChildren());
+        expect($trees[0]->getChildren()[0]->getId())->equals($skills[1]->id);
     }
 
     public function testGenerationWithTwoRootNodes()
@@ -27,8 +27,9 @@ class SkillTreeTest extends \Codeception\Test\Unit
             new Skill(['id' => 2, 'name' => 'Test Skill 2'])
         ];
 
-        $this->expectException(\RuntimeException::class);
-        (new SkillTreeBuilder($skills))->getTree();
+        $trees = (new SkillTreeBuilder($skills))->getTrees();
+        expect($trees[0]->getId())->equals($skills[0]->id);
+        expect($trees[1]->getId())->equals($skills[1]->id);
     }
 
     public function testGenerationWithSingleItem()
@@ -37,8 +38,8 @@ class SkillTreeTest extends \Codeception\Test\Unit
             new Skill(['id' => 1, 'name' => 'Test Skill 1']),
         ];
 
-        $tree = (new SkillTreeBuilder($skills))->getTree();
-        expect($tree->getId())->equals($skills[0]->id);
-        expect_not($tree->getChildren());
+        $trees = (new SkillTreeBuilder($skills))->getTrees();
+        expect($trees[0]->getId())->equals($skills[0]->id);
+        expect_not($trees[0]->getChildren());
     }
 }

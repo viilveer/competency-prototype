@@ -99,10 +99,17 @@ class EmployeeSkillCalculator
     private function processSkillsDownwards()
     {
         while (($employeeSkill = $this->getSkillWithoutLevel()) !== null) {
-            $parentSkillId = ArrayHelper::getValue($this->skillsFlat, $employeeSkill->skill_id)->parent_skill_id;
-            $parentEmployeeSkill = $this->getEmployeeSkill($parentSkillId);
-            if ($parentEmployeeSkill && $parentEmployeeSkill->level) {
-                $employeeSkill->level = $parentEmployeeSkill->level / 4;
+            if ($this->isSkillCalculable($employeeSkill)) {
+                $parentSkillId = ArrayHelper::getValue($this->skillsFlat, $employeeSkill->skill_id)->parent_skill_id;
+                if ($parentSkillId) {
+                    $parentEmployeeSkill = $this->getEmployeeSkill($parentSkillId);
+                    if ($parentEmployeeSkill && $parentEmployeeSkill->level !== null) {
+                        $employeeSkill->level = $parentEmployeeSkill->level / 4;
+                        $this->virtualEmployeeSkills[$employeeSkill->skill_id] = $employeeSkill;
+                    }
+                }
+            } else {
+                $employeeSkill->level = 0;
                 $this->virtualEmployeeSkills[$employeeSkill->skill_id] = $employeeSkill;
             }
         }
@@ -148,5 +155,24 @@ class EmployeeSkillCalculator
             $this->calculateSkills();
         }
         return array_values($this->virtualEmployeeSkills);
+    }
+
+    /**
+     * @param EmployeeSkill $employeeSkill
+     * @return bool
+     */
+    private function isSkillCalculable(EmployeeSkill $employeeSkill): bool
+    {
+        $parentSkillId = ArrayHelper::getValue($this->skillsFlat, $employeeSkill->skill_id)->parent_skill_id;
+
+        if ($parentSkillId) {
+            while (($currentSkill = $this->getEmployeeSkill($parentSkillId)) !== null) {
+                if ($currentSkill->level !== null) {
+                    return true;
+                }
+                $parentSkillId = ArrayHelper::getValue($this->skillsFlat, $currentSkill->skill_id)->parent_skill_id;
+            }
+        }
+        return false;
     }
 }
