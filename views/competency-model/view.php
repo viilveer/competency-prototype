@@ -49,8 +49,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'skill.name',
             [
                 'class' => 'yii\grid\ActionColumn',
+                'template' => '{delete}',
                 'urlCreator' => function ($action, $model, $key, $index) {
-                    return \yii\helpers\Url::to(['/competency-model/' . $action, 'id' => $model->id]);
+                    return \yii\helpers\Url::to(['/competency-model-skill/' . $action, 'id' => $model->id]);
                 }
             ],
         ],

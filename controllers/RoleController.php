@@ -117,7 +117,6 @@ class RoleController extends Controller
         $model = $this->findModel($id);
 
         $companyId = $model->company_id;
-        EmployeeRole::deleteAll(['role_id' => $id]);
         $model->delete();
 
         return $this->redirect(['company/view', 'id' => $companyId]);

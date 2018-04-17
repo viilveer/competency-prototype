@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "employee_skill".
@@ -10,6 +11,7 @@ use Yii;
  * @property int $id
  * @property int $employee_id
  * @property int $skill_id
+ * @property string $skill_date
  * @property float $level
  *
  * @property Employee $employee
@@ -25,13 +27,23 @@ class EmployeeSkill extends \yii\db\ActiveRecord
         return 'employee_skill';
     }
 
+    public function fields()
+    {
+        return ArrayHelper::merge(parent::fields(), [
+            'skill' => function () {
+                return $this->skill;
+            }
+        ]);
+    }
+
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['employee_id', 'skill_id', 'level'], 'required'],
+            [['employee_id', 'skill_id', 'level', 'skill_date'], 'required'],
             [['employee_id', 'skill_id'], 'integer'],
             [['level'], 'number'],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],

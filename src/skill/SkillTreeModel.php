@@ -4,6 +4,8 @@ namespace competencyManagement\skill;
 
 use app\models\Skill;
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 class SkillTreeModel extends Model
 {
@@ -103,5 +105,39 @@ class SkillTreeModel extends Model
     public function getEmployeeSkillLevel()
     {
         return $this->employeeSkillLevel;
+    }
+
+    /**
+     * TODO :: this method should be in speratate presentation class, however in prototype phase this can be here
+     * Returns table row presentation
+     * @param int $indent defines how many tabulations must be before name (nesting)
+     * @return array
+     */
+    public function getTableRowPresentation($indent = 0): array
+    {
+        $rows = [];
+        $indents = null;
+        for ($i = 0; $i < $indent; $i++) {
+            $indents .= '&emsp;';
+        }
+        $rows[] = Html::tag('tr', Html::tag('td', $this->id) .
+            Html::tag('td', $indents .
+            Html::a($this->name, ['skill/update', 'id' => $this->id])) .
+            Html::tag('td', Html::a(
+                Html::tag('span',
+                    '',
+                    ['class' => 'glyphicon glyphicon-trash']),
+                ['skill/delete', 'id' => $this->id],
+                ['title' => 'Delete', 'data-label' => 'Delete', 'data-confirm' => 'Are you sure you want to delete this item?', 'data-pjax' => 0, 'data-method' => 'post']
+            ))
+        );
+        if ($this->getChildren()) {
+            $indent++;
+            foreach ($this->getChildren() as $child) {
+                $rows = ArrayHelper::merge($rows, $child->getTableRowPresentation($indent));
+            }
+        }
+
+        return $rows;
     }
 }

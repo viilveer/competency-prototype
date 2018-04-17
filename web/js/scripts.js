@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var container = $('#tree');
+    var graphContainer = $('#2dgraph');
 
     var options = {
         layout: {
@@ -17,6 +18,12 @@ $(document).ready(function () {
         }
     };
     var network = new vis.Network(container.get(0), {}, options);
+    var graphOptions = {
+        legend: true,
+        start: '2018-04-04',
+        end: '2018-04-14'
+    };
+    var graph = new vis.Graph2d(graphContainer.get(0), {}, graphOptions);
 
     $(document).on('keyup', 'input.form-control', function () {
         var skillLevel = $(this).val();
@@ -55,7 +62,6 @@ $(document).ready(function () {
     }
 
     function getColor(level) {
-        console.log(level);
         var lightness = 30;
         if (level > 30) {
             lightness = level;
@@ -63,8 +69,55 @@ $(document).ready(function () {
         return ["hsl(120,100%,"+ lightness +"%)"].join("");
     }
 
+    function getSmallestDate(items)
+    {
+        var smallestDate = items.reduce(function(prev, curr) {
+            console.log(prev, curr);
+            var smallerDate = curr.x;
+            if (prev) {
+                smallerDate = new Date(prev.x) > new Date(curr.x) ? curr : prev;
+            }
+            return smallerDate;
+        });
+        console.log(smallestDate);
+        return smallestDate;
+    }
+
 
     function setVisJsData() {
+        $.getJSON(graphContainer.data('remote-url'), function (employeeSkills) {
+            var groups = new vis.DataSet();
+            for (var key in employeeSkills) {
+                var skillGroups = employeeSkills[key].map(function (item) {
+                    return {
+                        id: item.skill_id,
+                        content: item.skill.name
+                    };
+                });
+                groups.add(skillGroups[0]);
+            }
+            var items = [];
+            for (var key in employeeSkills) {
+                var data = employeeSkills[key].map(function (item) {
+                    return {
+                        x: item.skill_date,
+                        y: item.level,
+                        group: parseInt(key)
+                    };
+                });
+                items = items.concat(data);
+            }
+            var dataset = new vis.DataSet(items);
+            var graphOptions = {
+                start: getSmallestDate(items).x,
+                end: new Date().toString()
+            };
+
+            graph.setGroups(groups);
+            graph.setItems(dataset);
+            graph.setOptions(graphOptions);
+            graph.redraw();
+        });
         $.getJSON(container.data('remote-url'), function (trees) {
             // create an array with nodes
             var formattedTrees = trees.map(function (tree) {
@@ -78,7 +131,6 @@ $(document).ready(function () {
                     };
                 })
             });
-            console.log(formattedTrees);
             var nodes = new vis.DataSet(formattedTrees.reduce(function (a, b) {
                 return a.concat(b);
             }));

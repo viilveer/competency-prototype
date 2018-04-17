@@ -113,12 +113,6 @@ class EmployeeCourseController extends Controller
     {
         $model = $this->findModel($id);
 
-        Yii::$app->db->transaction(function() use($model ,$id) {
-            EmployeeCourseSkill::deleteAll(['employee_course_id' => $id]);
-            $model->delete();
-
-        });
-
         return $this->redirect(['course/view', 'id' => $model->course_id]);
     }
 
@@ -147,12 +141,13 @@ class EmployeeCourseController extends Controller
     {
         $model = EmployeeCourse::find()
             ->innerJoinWith(['employeeCourseSkills', 'employee', 'employee.employeeSkills'])
-            ->where([EmployeeCourse::tableName() . '.id' => $id])
+            ->where([EmployeeCourse::tableName() . '.id' => $id, 'status' => 'STARTED'])
             ->one();
-
         $improver = new EmployeeSkillImprover($model->employee);
         $improvedSkills = $improver->improveSkills($model->employeeCourseSkills);
-        Yii::$app->db->transaction(function () use ($improvedSkills) {
+        $model->status = 'FINISHED';
+        Yii::$app->db->transaction(function () use ($model, $improvedSkills) {
+            $model->save();
             foreach ($improvedSkills as $improvedSkill) {
                 $improvedSkill->save();
             }

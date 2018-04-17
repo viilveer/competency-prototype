@@ -28,9 +28,12 @@ $this->registerJsFile(
     ['position' => View::POS_HEAD, 'depends' => [JqueryAsset::class]]
 );
 
-?>
+$this->registerCssFile('//visjs.org/dist/vis-timeline-graph2d.min.css');
 
+?>
+<h2>Skill hierarchy</h2>
 <div id="tree" style="height: 400px" data-remote-url="<?= \yii\helpers\Url::to(['employee-skill/tree', 'employeeId' => $employeeId]) ?>"></div>
+<h2>Skill assigner</h2>
 <div id="w0" class="grid-view">
     <table class="table table-striped table-bordered">
         <thead>
@@ -59,3 +62,5 @@ $this->registerJsFile(
         </tbody>
     </table>
 </div>
+<h2>Skill levels in time</h2>
+<div id="2dgraph" style="height: 400px" data-remote-url="<?= \yii\helpers\Url::to(['employee-skill/json', 'employeeId' => $employeeId]) ?>"></div>

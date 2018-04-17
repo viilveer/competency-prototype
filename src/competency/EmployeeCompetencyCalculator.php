@@ -36,6 +36,9 @@ class EmployeeCompetencyCalculator
     public function calculate()
     {
         $roleSkillCount = count($this->roleSkills);
+        if ($roleSkillCount === 0) {
+            return 0;
+        }
         $totalSuitability = 0;
         foreach ($this->roleSkills as $skillId => $roleSkill) {
             /** @var EmployeeSkill $employeeSkill */

@@ -9,8 +9,6 @@ use Yii;
  *
  * @property int $id
  * @property string $name
- * @property int $age
- * @property string $gender
  * @property int $company_id
  *
  * @property Company $company
@@ -34,10 +32,9 @@ class Employee extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'age', 'gender', 'company_id'], 'required'],
-            [['age', 'company_id'], 'integer'],
+            [['name', 'company_id'], 'required'],
+            [['company_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
-            [['gender'], 'string', 'max' => 32],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
         ];
     }
@@ -85,7 +82,8 @@ class Employee extends \yii\db\ActiveRecord
      */
     public function getEmployeeSkills()
     {
-        return $this->hasMany(EmployeeSkill::className(), ['employee_id' => 'id']);
+        return $this->hasMany(EmployeeSkill::className(), ['employee_id' => 'id'])
+            ->leftJoin(EmployeeSkill::tableName() . ' es', EmployeeSkill::tableName() . '.skill_id = es.skill_id AND ' . EmployeeSkill::tableName() . '.skill_date < es.skill_date');
     }
 
     /**

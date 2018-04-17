@@ -7,6 +7,7 @@ use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Company */
+/* @var $skillTrees \competencyManagement\skill\SkillTreeModel[] */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Companies', 'url' => ['index']];
@@ -19,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add employee', ['/employee/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Add skill', ['/skill/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add role', ['/role/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add course', ['/course/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Add competency model', ['/competency-model/create', 'companyId' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -45,8 +47,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'name',
-            'age',
-            'gender',
             [
                 'class' => 'yii\grid\ActionColumn',
                 'urlCreator' => function ($action, $model, $key, $index) {
@@ -55,6 +55,36 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
+
+    <h3>Skills</h3>
+    <div id="w100" class="grid-view">
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Skill</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($skillTrees as $skillTree) {
+                echo implode('' , $skillTree->getTableRowPresentation());
+//                echo Html::tag(
+//                    'tr',
+//                    sprintf(
+//                        '%s%s%s',
+//                        Html::tag('td'),
+//                        Html::tag('td', $skillTree->->name),
+//                        Html::tag('td', Html::textInput('skill', $employeeSkill ? $employeeSkill->level : null, ['class' => 'form-control']))
+//                    ),
+//                    ['data-update' => \yii\helpers\Url::to(['employee-skill/update', 'employeeId' => $employeeId, 'skillId' => $skill->id])]
+//                );
+            }
+            ?>
+            </tbody>
+        </table>
+    </div>
 
     <h3>Competency models</h3>
     <?= GridView::widget([

@@ -24,7 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Add role', ['employee-role/create', 'employeeId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Manage skills', ['employee-skill/view', 'employeeId' => $model->id],
             ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -41,32 +40,33 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'age',
-            'gender',
         ],
     ]) ?>
 
     <h3>Roles</h3>
     <?= GridView::widget([
         'dataProvider' => $employeeRoleDataProvider,
-        'filterModel' => $employeeRoleSearchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
-                'content' => function (EmployeeRole $employeeRole, $key, $index, $column) use ($employeeAnalyzer) {
+                'content' => function (\app\models\Role $role, $key, $index, $column) use ($employeeAnalyzer) {
                     return sprintf(
                         '%s (Competency: %s)',
-                        $employeeRole->role->name,
-                        Yii::$app->formatter->asPercent($employeeAnalyzer->getEmployeeCompetency($employeeRole->role))
+                        $role->name,
+                        Yii::$app->formatter->asPercent($employeeAnalyzer->getEmployeeCompetency($role))
                     );
                 }
             ],
-
             [
+                'buttons' => [
+                    'toggle-role' => function ($url, \app\models\Role $model, $key) {
+                        return empty($model->employeeRoles) ? Html::a('Add to role', $url) : Html::a('Remove from role', $url);
+                    },
+                ],
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{delete}',
-                'urlCreator' => function ($action, $model, $key, $index) {
-                    return Url::to(['/employee-role/' . $action, 'id' => $model->id]);
+                'template' => '{toggle-role}',
+                'urlCreator' => function ($action, \app\models\Role $listModel, $key, $index) use ($model) {
+                    return Url::to(['/employee-role/' . $action, 'id' => $listModel->id, 'employeeId' => $model->id]);
                 }
             ],
         ],

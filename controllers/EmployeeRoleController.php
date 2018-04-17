@@ -54,7 +54,7 @@ class EmployeeRoleController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView(int $id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
@@ -96,7 +96,7 @@ class EmployeeRoleController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
 
@@ -127,6 +127,26 @@ class EmployeeRoleController extends Controller
         $model->delete();
 
         return $this->redirect(['employee/view', 'id' => $employeeId]);
+    }
+
+    /**
+     * @param int $id
+     * @param int $employeeId
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionToggleRole(int $id, int $employeeId)
+    {
+        $params = ['role_id' => $id, 'employee_id' => $employeeId];
+        $model = EmployeeRole::find()->where($params)->one();
+        if (is_null($model)) {
+            $model = new EmployeeRole($params);
+            $model->save();
+        } else {
+            $model->delete();
+        }
+        $this->redirect(Yii::$app->request->getReferrer());
     }
 
     /**

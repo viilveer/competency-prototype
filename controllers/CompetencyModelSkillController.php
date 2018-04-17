@@ -69,7 +69,7 @@ class CompetencyModelSkillController extends Controller
         $model->competency_model_id = $competencyModelId;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['competency-model/view', 'id' => $model->competency_model_id]);
         }
 
         return $this->render('create', [
@@ -106,9 +106,12 @@ class CompetencyModelSkillController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
 
-        return $this->redirect(['index']);
+        $competencyModelId = $model->competency_model_id;
+        $model->delete();
+
+        return $this->redirect(['competency-model/view', 'id' => $competencyModelId]);
     }
 
     /**

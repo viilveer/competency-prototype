@@ -10,7 +10,15 @@ use yii\widgets\DetailView;
 /* @var $skills \app\models\Skill[] */
 
 $this->title = sprintf('Manage employee %s course %s',  $model->employee->name, $model->course->name);
-$this->params['breadcrumbs'][] = ['label' => 'Employee Courses', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Companies', 'url' => ['company/index']];
+$this->params['breadcrumbs'][] = [
+    'label' => $model->employee->company->name,
+    'url' => ['company/view', 'id' => $model->employee->company_id]
+];
+$this->params['breadcrumbs'][] = [
+    'label' => $model->course->name,
+    'url' => ['course/view', 'id' => $model->course_id]
+];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="employee-course-view">
@@ -18,7 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -47,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <th>#</th>
             <th>Skill</th>
             <th>Current Level</th>
-            <th>Gain with course</th>
+            <th>After course level</th>
         </tr>
         </thead>
         <tbody>

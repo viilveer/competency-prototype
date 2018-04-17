@@ -16,7 +16,7 @@ class SkillTreeBuilder
     /**
      * @var SkillTreeModel[]
      */
-    private $tree;
+    private $trees = [];
 
     /**
      * SkillTreeBuilder constructor.
@@ -35,9 +35,9 @@ class SkillTreeBuilder
     {
         foreach ($this->skills as $skill) {
             if ($skill->parent_skill_id === null) {
-                $this->tree[] = new SkillTreeModel(0, $skill, $this->skills);
+                $this->trees[] = new SkillTreeModel(0, $skill, $this->skills);
             }
         }
-        return $this->tree;
+        return $this->trees;
     }
 }

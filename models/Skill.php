@@ -53,7 +53,7 @@ class Skill extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'company_id' => 'Company ID',
-            'parent_skill_id' => 'Parent Skill ID',
+            'parent_skill_id' => 'Parent Skill',
             'name' => 'Name',
             'description' => 'Description',
         ];

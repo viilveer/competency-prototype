@@ -6,6 +6,8 @@ use app\models\CompetencyModelSearch;
 use app\models\CourseSearchForm;
 use app\models\EmployeeSearch;
 use app\models\RoleSearch;
+use app\models\SkillSearchModel;
+use competencyManagement\skill\SkillTreeBuilder;
 use Yii;
 use app\models\Company;
 use app\models\CompanySearch;
@@ -73,6 +75,12 @@ class CompanyController extends Controller
         $competencyModelSearchForm->company_id = $id;
         $competencyDataProvider = $competencyModelSearchForm->search($params);
 
+        $skillSearchModel = new SkillSearchModel();
+        $skillSearchModel->company_id = $id;
+        $dataProvider = $skillSearchModel->search($params);
+
+        $skillTrees = (new SkillTreeBuilder($dataProvider->getModels()))->getTrees();
+
         return $this->render('view', [
             'model' => $this->findModel($id),
             'employeeDataProvider' => $employeeDataProvider,
@@ -83,6 +91,7 @@ class CompanyController extends Controller
             'courseDataProvider' => $courseDataProvider,
             'competencyModelSearchForm' => $competencyModelSearchForm,
             'competencyDataProvider' => $competencyDataProvider,
+            'skillTrees' => $skillTrees,
         ]);
     }
 

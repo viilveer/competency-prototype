@@ -47,7 +47,8 @@ class EmployeeSkillImprover
 
     /**
      * Improves single skill
-     * Uses linear graph formula to improve skill when employee skill level is greater than max_gain_until
+     * Employee skill level cannot be higher than course skill modifier
+     * If employee skill level is already higher, then nothing will change
      * @param EmployeeSkill $employeeSkill
      * @param EmployeeCourseSkill $courseSkill
      * @return EmployeeSkill
@@ -56,7 +57,9 @@ class EmployeeSkillImprover
     {
         $employeeSkill->employee_id = $this->employee->id;
         $employeeSkill->skill_id = $courseSkill->skill_id;
-        $employeeSkill->level += $courseSkill->modifier;
+        if ($employeeSkill->level < $courseSkill->modifier) {
+            $employeeSkill->level = $courseSkill->modifier;
+        }
         return $employeeSkill;
     }
 }

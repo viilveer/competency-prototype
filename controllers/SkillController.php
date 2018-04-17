@@ -2,25 +2,17 @@
 
 namespace app\controllers;
 
-use app\models\EmployeeRole;
-use app\models\EmployeeRoleSearch;
-use app\models\Role;
-use app\models\RoleSearch;
-use app\models\Skill;
-use competencyManagement\employee\EmployeeAnalyzer;
 use Yii;
-use app\models\Employee;
-use app\models\EmployeeSearch;
-use yii\data\ActiveDataProvider;
-use yii\db\ActiveQuery;
+use app\models\Skill;
+use app\models\SkillSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * EmployeeController implements the CRUD actions for Employee model.
+ * SkillController implements the CRUD actions for Skill model.
  */
-class EmployeeController extends Controller
+class SkillController extends Controller
 {
     /**
      * @inheritdoc
@@ -38,12 +30,12 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Lists all Employee models.
+     * Lists all Skill models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new EmployeeSearch();
+        $searchModel = new SkillSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -53,38 +45,27 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Displays a single Employee model.
+     * Displays a single Skill model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView(int $id)
     {
-        $model = $this->findModel($id);
-        $employeeRoleDataProvider = new ActiveDataProvider([
-            'query' => Role::find()->where(['company_id' => $model->company_id])->with(['employeeRoles' => function (ActiveQuery $query) use ($model) {
-                return $query->where(EmployeeRole::tableName() . '.employee_id = :id', [':id' => $model->id]);
-            }])
-        ]);
-        $companySkills = Skill::findAll(['company_id' => $model->company_id]);
-        $employeeAnalyzer = new EmployeeAnalyzer($model, $companySkills);
-
         return $this->render('view', [
-            'model' => $model,
-            'employeeAnalyzer' => $employeeAnalyzer,
-            'employeeRoleDataProvider' => $employeeRoleDataProvider,
+            'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new Employee model.
+     * Creates a new Skill model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @param int $companyId
      * @return mixed
      */
     public function actionCreate(int $companyId)
     {
-        $model = new Employee();
+        $model = new Skill();
         $model->company_id = $companyId;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -97,13 +78,13 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Updates an existing Employee model.
+     * Updates an existing Skill model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
 
@@ -117,36 +98,32 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Deletes an existing Employee model.
+     * Deletes an existing Skill model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
-     * @throws \Exception
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete(int $id)
     {
         $model = $this->findModel($id);
 
         $companyId = $model->company_id;
-        EmployeeRole::deleteAll(['employee_id' => $id]);
         $model->delete();
 
         return $this->redirect(['company/view', 'id' => $companyId]);
     }
 
     /**
-     * Finds the Employee model based on its primary key value.
+     * Finds the Skill model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Employee the loaded model
+     * @return Skill the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel(int $id)
     {
-        if (($model = Employee::findOne($id)) !== null) {
+        if (($model = Skill::findOne($id)) !== null) {
             return $model;
         }
 
