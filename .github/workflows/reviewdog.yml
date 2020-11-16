@@ -10,3 +10,6 @@ jobs:
         uses: MiddleFieldInc/PHPAnalyseDog@v0.1.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          level: warning
+          phpcs_args: '. --standard=/phpcs-custom.xml'
+
