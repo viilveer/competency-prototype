@@ -23,4 +23,4 @@ jobs:
       - name: Publish warnings
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ${{PHPCS_FORMATTED}} | reviewdog -efm="%f:%l:%c:%m" -name="${INPUT_TOOL_NAME}" -reporter=github-pr-review -filter-mode="added" -fail-on-error="true" -level="warning"
+        run: ${PHPCS_FORMATTED} | reviewdog -efm="%f:%l:%c:%m" -name="${INPUT_TOOL_NAME}" -reporter=github-pr-review -filter-mode="added" -fail-on-error="true" -level="warning"
