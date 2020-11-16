@@ -11,4 +11,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
-          phpcs_flags: '--standard=phpcs.xml .'
+          phpcs_flags: '--standard=${{GITHUB_WORKSPACE}}/phpcs.xml ${{GITHUB_WORKSPACE}}/src'
