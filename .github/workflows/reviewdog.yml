@@ -15,7 +15,7 @@ jobs:
           tools: phpcs
       - name: Setup reviewdog
         run: |
-          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/ \
+          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
           apk --no-cache add jq
       - name: RUN PHPCS
         env:
