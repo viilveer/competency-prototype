@@ -11,5 +11,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           level: warning
-          phpcs_args: '. --standard=/phpcs-custom.xml'
+          phpcs_args: '. --standard=phpcs-custom.xml'
 
