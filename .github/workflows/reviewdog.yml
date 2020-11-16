@@ -6,9 +6,14 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: phpcs
-        uses: shirobrak/action-phpcs@v1.0.0
+      - name: Setup PHP Action
+        # You may pin to the exact commit or the version.
+        # uses: shivammathur/setup-php@c596331f84de248c01c26db5a184880781e96e36
+        uses: shivammathur/setup-php@2.7.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          phpcs_flags: '--standard=phpcs.xml .'
+          php-version: "7.4"
+          tools: phpcs
+      - name: RUN PHPCS
+        run: |
+          phpcs --ruleset=phpcs.xml .
+        
