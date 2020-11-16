@@ -9,5 +9,5 @@ jobs:
       - uses: hrysd/action-php_codesniffer@v1
         with:
           github_token: ${{ secrets.github_token }}
-          standard: PSR12
-          target_directory: src,web
+          standard: phpcs.xml
+          target_directory:
