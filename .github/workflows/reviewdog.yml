@@ -5,6 +5,8 @@ jobs:
     name: PHP CodeSniffer
     runs-on: ubuntu-20.04
     steps:
-      uses: MiddleFieldInc/PHPAnalyseDog@v0.1.2
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v2
+      - name: phpcs
+        uses: MiddleFieldInc/PHPAnalyseDog@v0.1.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
