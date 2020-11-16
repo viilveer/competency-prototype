@@ -7,9 +7,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: phpcs
-        uses: MiddleFieldInc/PHPAnalyseDog@v0.1.2
+        uses: shirobrak/action-phpcs@v1.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          level: warning
-          phpcs_args: '. --standard=phpcs-custom.xml'
+          reporter: github-pr-review
+          phpcs_flags: '. --standard=phpcs-custom.xml'
 
