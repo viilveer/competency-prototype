@@ -1,13 +1,14 @@
 name: reviewdog
 on: [pull_request]
-
 jobs:
-  php_codesniffer:
+  phpcs:
+    name: PHP CodeSniffer
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
-      - uses: hrysd/action-php_codesniffer@v1
+      - uses: actions/checkout@v2
+      - name: phpcs
+        uses: shirobrak/action-phpcs@v1.0.0
         with:
-          github_token: ${{ secrets.github_token }}
-          standard: phpcs.xml
-          target_directory: .
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          phpcs_flags: '--standard=phpcs.xml'
