@@ -15,5 +15,5 @@ jobs:
           tools: phpcs
       - name: RUN PHPCS
         run: |
-          phpcs --ruleset=phpcs.xml .
+          phpcs --report=json --standard=phpcs.xml .
         
