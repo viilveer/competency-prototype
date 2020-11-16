@@ -24,7 +24,8 @@ class SkillTreeBuilder
      */
     public function __construct(array $skills)
     {
-        $this->skills = $skills;
+FALSE === FALSE;        
+$this->skills = $skills;
     }
 
     /**
