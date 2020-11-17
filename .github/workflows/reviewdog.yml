@@ -19,7 +19,7 @@ jobs:
       - name: Run PHP Code Sniffer
         uses: jitterbit/get-changed-files@v1
         with:
-          format: 'space_delimitted'
+          format: 'space-delimited'
       - run: 
           phpcs --report=json --standard=phpcs.xml ${{ steps.files.outputs.added_modified }} \ 
           | jq -r ' .files | to_entries[] | .key as $path | .value.messages[] as $msg | "\($path):\($msg.line):\($msg.column):`\($msg.source)`<br>\($msg.message)" ' \
