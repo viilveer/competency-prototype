@@ -16,15 +16,11 @@ jobs:
       - name: Setup reviewdog
         run: |
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
-      - name: Setup changed files
-        uses: jitterbit/get-changed-files@v1
-      - run: |
-          for changed_file in ${{ steps.files.outputs.all }}; do
-            echo "Do something with this ${changed_file}."
-          done
-    #  - name: Run PHP Code Sniffer on added and modified files
-    #    run: 
-    #      phpcs --report=json --standard=phpcs.xml ${steps.files.outputs.added_modified}
-    #      #| jq -r ' .files | to_entries[] | .key as $path | .value.messages[] as $msg | "\($path):\($msg.line):\($msg.column):`\($msg.source)`<br>\($msg.message)" ' | reviewdog -tee -efm="%f:%l:%c:%m" -reporter=github-pr-review -filter-mode="added" -fail-on-error=false -level="warning"
-    #    env:
-    #      REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run PHP Code Sniffer on added and modified files
+        run: 
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files" && \ 
+          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename') && \
+          phpcs --report=json --standard=phpcs.xml $FILES
+          #| jq -r ' .files | to_entries[] | .key as $path | .value.messages[] as $msg | "\($path):\($msg.line):\($msg.column):`\($msg.source)`<br>\($msg.message)" ' | reviewdog -tee -efm="%f:%l:%c:%m" -reporter=github-pr-review -filter-mode="added" -fail-on-error=false -level="warning"
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
