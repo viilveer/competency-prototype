@@ -19,9 +19,9 @@ jobs:
       - name: Run PHP Code Sniffer
         uses: jitterbit/get-changed-files@v1
         with:
-          format: 'json'
+          format: 'space_delimitted'
       - run: 
-          phpcs --report=json --standard=phpcs.xml `jq -r '.added_modified | join (", ")' | ${{ steps.files.outputs }}` \ 
+          phpcs --report=json --standard=phpcs.xml ${{ steps.files.outputs.added_modified }} \ 
           | jq -r ' .files | to_entries[] | .key as $path | .value.messages[] as $msg | "\($path):\($msg.line):\($msg.column):`\($msg.source)`<br>\($msg.message)" ' \
           | reviewdog -tee -efm="%f:%l:%c:%m" -reporter=github-pr-review -filter-mode="added" -fail-on-error=false -level="warning"
         env:
