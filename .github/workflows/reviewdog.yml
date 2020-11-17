@@ -17,7 +17,7 @@ jobs:
         run: |
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
       - name: Get file changes
-      - id: files
+        id: files
         uses: jitterbit/get-changed-files@v1
       - name: Run PHP Code Sniffer on added and modified files
         run: 
