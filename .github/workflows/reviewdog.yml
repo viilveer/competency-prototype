@@ -17,7 +17,7 @@ jobs:
           git fetch --progress origin ${{ github.base_ref }}
           files=$(git diff --diff-filter=ACM --name-only origin/${{ github.base_ref }} | xargs)
           echo $files
-          echo '::set-output name=TEST::$files'
+          echo '::set-output name=TEST::${files}'
       - name: Setup reviewdog
         run: |
           echo ${{ steps.base_branch.outputs.TEST }}
