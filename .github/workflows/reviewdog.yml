@@ -17,11 +17,13 @@ jobs:
           git fetch --progress origin ${{ github.base_ref }}
           files=$(git diff --diff-filter=ACM --name-only origin/${{ github.base_ref }} | xargs)
           echo $files
-          echo '::set-output name=TEST::files'
+          core.setOutput('SELECTED_COLOR', $files)
+          echo '::set-output name=TEST::$files'
       - name: Setup reviewdog
         run: |
           echo $files
-          echo ${{ steps.base_branch.output.TEST }}
+          echo ${{ steps.base_branch.outputs.SELECTED_COLOR }}
+          echo ${{ steps.base_branch.outputs.TEST }}
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
       - name: Run PHP Code Sniffer on added and modified files
         run: 
