@@ -20,6 +20,7 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
       - name: Run PHP Code Sniffer on added and modified files
         run: 
-          phpcs --report=json --standard=phpcs.xml `git diff --name-only origin/${{ github.base_ref }} | xargs` | jq -r ' .files | to_entries[] | .key as $path | .value.messages[] as $msg | "\($path):\($msg.line):\($msg.column):`\($msg.source)`<br>\($msg.message)" ' | reviewdog -tee -efm="%f:%l:%c:%m" -reporter=github-pr-review -filter-mode="added" -fail-on-error=false -level="warning"
+          phpcs --report=json --standard=phpcs.xml `git diff --name-only origin/${{ github.base_ref }} | xargs` 
+          #| jq -r ' .files | to_entries[] | .key as $path | .value.messages[] as $msg | "\($path):\($msg.line):\($msg.column):`\($msg.source)`<br>\($msg.message)" ' | reviewdog -tee -efm="%f:%l:%c:%m" -reporter=github-pr-review -filter-mode="added" -fail-on-error=false -level="warning"
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
