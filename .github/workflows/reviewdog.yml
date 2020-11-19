@@ -18,7 +18,7 @@ jobs:
         run: |
           git fetch --progress origin ${{ github.base_ref }}
       - name: And finally, diff
-        run: git diff --name-only ${{ github.head_ref }}
+        run: git diff --name-only ${{ github.base_ref }}
       #- name: Setup reviewdog
        # run: |
        #   curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
