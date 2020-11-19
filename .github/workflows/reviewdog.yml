@@ -18,15 +18,13 @@ jobs:
         run: |
           git fetch --progress origin ${{ github.base_ref }}
       - name: And finally, diff
-        run: git diff --name-only origin/${{ github.base_ref }}
-      #- name: Setup reviewdog
-       # run: |
-       #   curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
-      #- name: Get file changes
-      #  id: files
-      #  uses: lots0logs/gh-action-get-changed-files@2.1.4
-      #- name: Run PHP Code Sniffer on added and modified files
-      #  run: 
-      #    phpcs --report=json --standard=phpcs.xml ${{ steps.files.outputs.modified }} | jq -r ' .files | to_entries[] | .key as $path | .value.messages[] as $msg | "\($path):\($msg.line):\($msg.column):`\($msg.source)`<br>\($msg.message)" ' | reviewdog -tee -efm="%f:%l:%c:%m" -reporter=github-pr-review -filter-mode="added" -fail-on-error=false -level="warning"
-      #  env:
-      #    REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: files
+        run: echo '::set-output name=diff::(git diff --name-only origin/${{ github.base_ref }} | xargs)'
+      - name: Setup reviewdog
+        run: |
+          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
+      - name: Run PHP Code Sniffer on added and modified files
+        run: 
+          phpcs --report=json --standard=phpcs.xml ${{ steps.files.outputs.diff }} | jq -r ' .files | to_entries[] | .key as $path | .value.messages[] as $msg | "\($path):\($msg.line):\($msg.column):`\($msg.source)`<br>\($msg.message)" ' | reviewdog -tee -efm="%f:%l:%c:%m" -reporter=github-pr-review -filter-mode="added" -fail-on-error=false -level="warning"
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
