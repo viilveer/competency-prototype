@@ -17,13 +17,8 @@ jobs:
         id: base_branch
         run: |
           git fetch --progress origin ${{ github.base_ref }}
-      - name: Set up Python ${{ matrix.python-version }}
-        run: |
-          cat << 'EOF'
-          ${{ toJSON(github) }}
-          EOF
       - name: And finally, diff
-        run: git diff --name-only origin/master
+        run: git diff --name-only origin ${{ github.head_ref }}
       #- name: Setup reviewdog
        # run: |
        #   curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
