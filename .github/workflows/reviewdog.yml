@@ -19,7 +19,7 @@ jobs:
           echo '::set-output name=files::$files'
       - name: Setup reviewdog
         run: |
-          ${{ steps.base_branch.output.files }}
+          echo ${{ steps.base_branch.output.files }}
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
       - name: Run PHP Code Sniffer on added and modified files
         run: 
