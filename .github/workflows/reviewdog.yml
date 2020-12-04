@@ -1,0 +1,25 @@
+name: Code style (PSR12)
+on: [pull_request]
+jobs:
+  phpcs:
+    name: PHP CodeSniffer
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@2.7.0
+        with:
+          php-version: "7.4"
+          tools: phpcs, cs2pr
+      - name: Fetch base branch
+        id: base_branch
+        run: |
+          git fetch --progress origin ${{ github.base_ref }}
+          files=$(git diff --diff-filter=ACM --name-only origin/${{ github.base_ref }} | xargs)
+          echo $files
+          echo "::set-output name=TEST::$(echo $files)"
+      - name: Run PHP Code Sniffer on added and modified files
+        run: 
+          phpcs --report=checkstyle --standard=phpcs.xml `git diff --diff-filter=ACM --name-only origin/${{ github.base_ref }} | xargs` | cs2pr
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
