@@ -10,7 +10,7 @@ jobs:
         uses: shivammathur/setup-php@2.7.0
         with:
           php-version: "7.4"
-          tools: phpcs
+          tools: phpcs, cs2pr
       - name: Fetch base branch
         id: base_branch
         run: |
@@ -18,10 +18,6 @@ jobs:
           files=$(git diff --diff-filter=ACM --name-only origin/${{ github.base_ref }} | xargs)
           echo $files
           echo "::set-output name=TEST::$(echo $files)"
-      - name: Setup reviewdog
-        run: |
-          echo ${{ steps.base_branch.outputs.TEST }}
-          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
       - name: Run PHP Code Sniffer on added and modified files
         run: 
           phpcs --report=checkstyle --standard=phpcs.xml `git diff --diff-filter=ACM --name-only origin/${{ github.base_ref }} | xargs` | cs2pr
